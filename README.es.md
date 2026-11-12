@@ -61,3 +61,13 @@ Apoyamos las labores legales de protección de vidas, rescate y seguridad de pro
 [Threat model](docs/THREAT_MODEL.md) · [Red Team engineering](docs/REDTEAM_ENGINEERING.md) · [Roadmap](docs/ROADMAP.md) · [Codex instructions](AGENTS.md)
 
 **© 2026 Chris Cruz (@h4ckd4d).**
+
+## Siguiente mejora técnica (v0.2 candidate)
+
+Comparación de archivos almacenados con hashes locales; no certifica procedencia.
+
+```bash
+custodyproof verify-files --ledger custody-ledger.jsonl --directory ./evidencias
+```
+
+**Chris Cruz — @h4ckd4d**.

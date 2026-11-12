@@ -61,3 +61,13 @@ Declaramos apoio ao trabalho lícito de proteção de vidas, salvamento e defesa
 [Threat model](docs/THREAT_MODEL.md) · [Red Team engineering](docs/REDTEAM_ENGINEERING.md) · [Roadmap](docs/ROADMAP.md) · [Codex instructions](AGENTS.md)
 
 **© 2026 Chris Cruz (@h4ckd4d).**
+
+## Próximo incremento técnico (v0.2 candidate)
+
+Verificação de arquivos atuais contra hashes do registro local; não certifica origem.
+
+```bash
+custodyproof verify-files --ledger custody-ledger.jsonl --directory ./evidencias
+```
+
+**Chris Cruz — @h4ckd4d**.

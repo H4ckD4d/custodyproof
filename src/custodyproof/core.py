@@ -49,9 +49,15 @@ def configure(sub):
     p.add_argument('file');p.add_argument('--ledger',default='custody-ledger.jsonl')
     p.add_argument('--case',default='DEMO-001');p.add_argument('--actor',default='lab')
     v=sub.add_parser('verify',help='Check ledger hash chain');v.add_argument('--ledger',default='custody-ledger.jsonl')
+    f=sub.add_parser('verify-files',help='Compare stored evidence with ledger digests')
+    f.add_argument('--ledger',default='custody-ledger.jsonl');f.add_argument('--directory',required=True)
 
 def run(args):
-    return add(args.file,args.ledger,args.case,args.actor) if args.command=='add' else verify(args.ledger)
+    if args.command == 'add':
+        return add(args.file, args.ledger, args.case, args.actor)
+    if args.command == 'verify-files':
+        return verify_files(args.ledger, args.directory)
+    return verify(args.ledger)
 
 def demo():
     import tempfile
@@ -60,3 +66,37 @@ def demo():
         ledger=Path(directory)/'ledger.jsonl'
         add(source,ledger)
         return verify(ledger)
+
+def verify_files(ledger, directory):
+    """Check that currently stored evidence matches recorded SHA-256 hashes.
+
+    This does not establish identity, time of acquisition, or external authenticity.
+    """
+    state = verify(ledger)
+    if not state['valid']:
+        return {'valid': False, 'ledger_valid': False, 'checked': 0, 'errors': ['ledger-integrity-invalid']}
+    root = Path(directory).resolve(strict=True)
+    if not root.is_dir():
+        raise ValueError('Evidence directory must be a directory')
+    errors = []
+    checked = 0
+    for i, event in enumerate(read_ledger(ledger), start=1):
+        if event.get('event') != 'intake':
+            continue
+        checked += 1
+        name = event.get('filename')
+        if not isinstance(name, str) or not name or name in ('.', '..') or Path(name).name != name:
+            errors.append({'event': i, 'reason': 'unsafe-filename'})
+            continue
+        file = root / name
+        if file.is_symlink() or not file.is_file():
+            errors.append({'event': i, 'reason': 'missing-or-symlink', 'filename': name})
+            continue
+        hasher = hashlib.sha256()
+        with file.open('rb') as stream:
+            for block in iter(lambda: stream.read(1024 * 1024), b''):
+                hasher.update(block)
+        if hasher.hexdigest() != event.get('sha256'):
+            errors.append({'event': i, 'reason': 'digest-mismatch', 'filename': name})
+    return {'valid': not errors, 'ledger_valid': True, 'checked': checked, 'errors': errors,
+            'note': 'Local file comparison only; not proof of provenance or trusted time.'}
