@@ -61,3 +61,23 @@ We support lawful efforts to protect lives, conduct rescues and provide responsi
 [Threat model](docs/THREAT_MODEL.md) · [Red Team engineering](docs/REDTEAM_ENGINEERING.md) · [Roadmap](docs/ROADMAP.md) · [Codex instructions](AGENTS.md)
 
 **© 2026 Chris Cruz (@h4ckd4d).**
+
+## Next technical increment (v0.2 candidate)
+
+Compare stored files against local ledger hashes; this does not certify provenance.
+
+```bash
+custodyproof verify-files --ledger custody-ledger.jsonl --directory ./evidencias
+```
+
+**Chris Cruz — @h4ckd4d**.
+
+## v0.3 candidate enhancement
+
+Local custody manifest report (not a certification):
+
+```bash
+custodyproof manifest --ledger ledger.jsonl --directory ./evidencias
+```
+
+[Commercial roadmap](docs/COMMERCIAL.md) · Chris Cruz — @h4ckd4d.
