@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.env
+.DS_Store
+private/
+reports/private/
+custody-ledger.jsonl
+*.ledger.jsonl

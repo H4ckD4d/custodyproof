@@ -1,0 +1,17 @@
+name: First contribution / Primeira contribuição / Primera contribución
+description: Safe starter contribution to CustodyProof
+labels: ['good first issue']
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Improvement / Melhoria / Mejora
+    validations:
+      required: true
+  - type: checkboxes
+    id: authorization
+    attributes:
+      label: Safety
+      options:
+        - label: Uses only synthetic, public or authorized data
+          required: true
