@@ -51,12 +51,16 @@ def configure(sub):
     v=sub.add_parser('verify',help='Check ledger hash chain');v.add_argument('--ledger',default='custody-ledger.jsonl')
     f=sub.add_parser('verify-files',help='Compare stored evidence with ledger digests')
     f.add_argument('--ledger',default='custody-ledger.jsonl');f.add_argument('--directory',required=True)
+    m=sub.add_parser('manifest',help='Emit structured digest verification report')
+    m.add_argument('--ledger',default='custody-ledger.jsonl');m.add_argument('--directory',required=True)
 
 def run(args):
     if args.command == 'add':
         return add(args.file, args.ledger, args.case, args.actor)
     if args.command == 'verify-files':
         return verify_files(args.ledger, args.directory)
+    if args.command == 'manifest':
+        return manifest(args.ledger,args.directory)
     return verify(args.ledger)
 
 def demo():
@@ -100,3 +104,12 @@ def verify_files(ledger, directory):
             errors.append({'event': i, 'reason': 'digest-mismatch', 'filename': name})
     return {'valid': not errors, 'ledger_valid': True, 'checked': checked, 'errors': errors,
             'note': 'Local file comparison only; not proof of provenance or trusted time.'}
+
+
+def manifest(ledger, directory):
+    """Structured file digest comparison: not a legal certification or trusted timestamp."""
+    checked=verify_files(ledger,directory)
+    return {'format':'h4-custody-manifest-v1','ledger_integrity':checked.get('ledger_valid'),
+            'files_checked':checked['checked'],'verified':checked['valid'] and checked['checked'] > 0,
+            'discrepancies':checked['errors'],
+            'limitations':'No trusted timestamp, independent identity validation or accreditation.'}

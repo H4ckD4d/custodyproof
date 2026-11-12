@@ -71,3 +71,13 @@ custodyproof verify-files --ledger custody-ledger.jsonl --directory ./evidencias
 ```
 
 **Chris Cruz — @h4ckd4d**.
+
+## Incremento v0.3 candidato
+
+Local custody manifest report (not a certification):
+
+```bash
+custodyproof manifest --ledger ledger.jsonl --directory ./evidencias
+```
+
+[Commercial roadmap](docs/COMMERCIAL.md) · Chris Cruz — @h4ckd4d.

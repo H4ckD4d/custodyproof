@@ -32,3 +32,16 @@ class CoreTests(unittest.TestCase):
             add(f,ledger)
             f.unlink(); (p/'elsewhere.txt').write_text('synthetic evidence'); f.symlink_to(p/'elsewhere.txt')
             self.assertEqual(verify_files(ledger,p)['errors'][0]['reason'], 'missing-or-symlink')
+
+    def test_manifest_matches_stored_file(self):
+        from custodyproof.core import manifest
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d);f=p/'sample.txt';f.write_text('fiction');ledger=p/'ledger.jsonl'
+            add(f,ledger)
+            self.assertTrue(manifest(ledger,p)['verified'])
+    def test_manifest_detects_missing(self):
+        from custodyproof.core import manifest
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d);f=p/'sample.txt';f.write_text('fiction');ledger=p/'ledger.jsonl'
+            add(f,ledger);f.unlink()
+            self.assertFalse(manifest(ledger,p)['verified'])
